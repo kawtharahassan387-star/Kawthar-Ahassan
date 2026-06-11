@@ -1,0 +1,6 @@
+{
+  "name": "Gestion des Fournitures Pro",
+  "description": "Système de gestion de stock pour fournitures de bureau, papeterie et consommables avec suivi des dotations par service.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

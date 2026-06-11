@@ -1,0 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --color-primary: #1B254B;
+  --color-secondary: #F4F7FE;
+  --color-accent: #4318FF;
+}
+
+@layer base {
+  body {
+    @apply bg-secondary text-black antialiased;
+    color: #000000;
+  }
+  input, select, textarea {
+    color: #000000 !important;
+  }
+  
+  /* Make all reading text truly black as requested (BDL LIA LON DYL LKTABA RDHA F LKHL - Change text color to black) */
+  .text-slate-400,
+  .text-slate-500,
+  .text-slate-600,
+  .text-slate-700,
+  .text-slate-800,
+  .text-slate-900,
+  .text-gray-400,
+  .text-gray-500,
+  .text-gray-600,
+  .text-gray-700,
+  .text-gray-800,
+  .text-gray-900 {
+    color: #000000 !important;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-xl;
+  }
+  
+  .sidebar-link {
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium;
+  }
+  
+  .sidebar-link-active {
+    @apply bg-accent text-white shadow-lg shadow-accent/20;
+  }
+  
+  .sidebar-link-inactive {
+    @apply text-[#A3AED0] hover:text-primary hover:bg-black/5;
+  }
+
+  .data-table-header {
+    @apply text-[#A3AED0] text-[10px] uppercase font-bold tracking-wider border-b border-gray-100;
+  }
+
+  .data-table-row {
+    @apply hover:bg-gray-50/50 transition-colors text-sm;
+  }
+}

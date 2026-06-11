@@ -1,0 +1,80 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    // Validation Helpers
+    function isValidItem(data) {
+      return data.keys().hasAll(['nProduit', 'name', 'category', 'quantity', 'unit', 'minStock', 'lastUpdated']) &&
+             data.nProduit is string && data.nProduit.size() > 0 &&
+             data.name is string && data.name.size() > 0 &&
+             data.category in ['STATIONERY', 'OFFICE_EQUIPMENT', 'CONSUMABLES', 'FURNITURE', 'MAINTENANCE', 'DRH', 'SRH', 'SFC', 'OTHER'] &&
+             data.quantity is number &&
+             data.unit is string &&
+             data.minStock is number &&
+             data.lastUpdated is number;
+    }
+
+    function isValidTransaction(data) {
+      return data.keys().hasAll(['itemId', 'itemName', 'type', 'quantity', 'date', 'designationPrestation']) &&
+             data.itemId is string &&
+             data.itemName is string &&
+             data.type in ['INCOMING', 'OUTGOING'] &&
+             data.quantity is number && data.quantity > 0 &&
+             data.date is number &&
+             data.designationPrestation is string;
+     }
+
+    function isValidSupplyRequest(data) {
+      return data.keys().hasAll(['itemId', 'itemName', 'itemCategory', 'requestedQuantity', 'requesterName', 'requesterDepartment', 'requestDate', 'status']) &&
+             data.itemId is string &&
+             data.itemName is string &&
+             data.itemCategory in ['STATIONERY', 'OFFICE_EQUIPMENT', 'CONSUMABLES', 'FURNITURE', 'MAINTENANCE', 'DRH', 'SRH', 'SFC', 'OTHER'] &&
+             data.requestedQuantity is number &&
+             data.requesterName is string &&
+             data.requesterDepartment in ['STATIONERY', 'OFFICE_EQUIPMENT', 'CONSUMABLES', 'FURNITURE', 'MAINTENANCE', 'DRH', 'SRH', 'SFC', 'OTHER'] &&
+             data.requestDate is number &&
+             data.status in ['PENDING', 'APPROVED', 'REJECTED'];
+    }
+
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Collection rules (Public access allowed as requested)
+    match /items/{itemId} {
+      allow read: if true;
+      allow create: if isValidItem(incoming());
+      allow update: if isValidItem(incoming());
+      allow delete: if true;
+    }
+
+    match /transactions/{transactionId} {
+      allow read: if true;
+      allow create: if isValidTransaction(incoming());
+      allow update: if isValidTransaction(incoming());
+      allow delete: if true;
+    }
+
+    match /supply_requests/{requestId} {
+      allow read: if true;
+      allow create: if isValidSupplyRequest(incoming());
+      allow update: if isValidSupplyRequest(incoming());
+      allow delete: if true;
+    }
+
+    match /config/{configId} {
+      allow read: if true;
+      allow create, update: if incoming().keys().hasAll(['password']) && incoming().password is string;
+      allow delete: if true;
+    }
+  }
+}

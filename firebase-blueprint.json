@@ -1,0 +1,86 @@
+{
+  "entities": {
+    "InventoryItem": {
+      "title": "Inventory Item",
+      "description": "An item in the inventory",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "nProduit": { "type": "string" },
+        "name": { "type": "string" },
+        "category": { "type": "string", "enum": ["STATIONERY", "OFFICE_EQUIPMENT", "CONSUMABLES", "FURNITURE", "MAINTENANCE", "DRH", "SRH", "SFC", "OTHER"] },
+        "quantity": { "type": "number" },
+        "unit": { "type": "string" },
+        "minStock": { "type": "number" },
+        "lastUpdated": { "type": "number" },
+        "location": { "type": "string" },
+        "observation": { "type": "string" }
+      },
+      "required": ["nProduit", "name", "category", "quantity", "unit", "minStock", "lastUpdated"]
+    },
+    "Transaction": {
+      "title": "Transaction",
+      "description": "A stock movement (incoming or outgoing)",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "itemId": { "type": "string" },
+        "itemName": { "type": "string" },
+        "type": { "type": "string", "enum": ["INCOMING", "OUTGOING"] },
+        "quantity": { "type": "number" },
+        "date": { "type": "number" },
+        "designationPrestation": { "type": "string" },
+        "observation": { "type": "string" }
+      },
+      "required": ["itemId", "itemName", "type", "quantity", "date", "designationPrestation"]
+    },
+    "SupplyRequest": {
+      "title": "Supply Request",
+      "description": "A supply request from a specific department/service",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "itemId": { "type": "string" },
+        "itemName": { "type": "string" },
+        "itemCategory": { "type": "string", "enum": ["STATIONERY", "OFFICE_EQUIPMENT", "CONSUMABLES", "FURNITURE", "MAINTENANCE", "DRH", "SRH", "SFC", "OTHER"] },
+        "requestedQuantity": { "type": "number" },
+        "requesterName": { "type": "string" },
+        "requesterDepartment": { "type": "string", "enum": ["STATIONERY", "OFFICE_EQUIPMENT", "CONSUMABLES", "FURNITURE", "MAINTENANCE", "DRH", "SRH", "SFC", "OTHER"] },
+        "requestDate": { "type": "number" },
+        "status": { "type": "string", "enum": ["PENDING", "APPROVED", "REJECTED"] },
+        "validatedQuantity": { "type": "number" },
+        "validationDate": { "type": "number" },
+        "observation": { "type": "string" }
+      },
+      "required": ["itemId", "itemName", "itemCategory", "requestedQuantity", "requesterName", "requesterDepartment", "requestDate", "status"]
+    },
+    "AppConfig": {
+      "title": "App Config",
+      "description": "Configuration document for global app security settings",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "password": { "type": "string" }
+      },
+      "required": ["password"]
+    }
+  },
+  "firestore": {
+    "/items/{itemId}": {
+      "schema": "InventoryItem",
+      "description": "Collection of inventory items"
+    },
+    "/transactions/{transactionId}": {
+      "schema": "Transaction",
+      "description": "Collection of stock movements"
+    },
+    "/supply_requests/{requestId}": {
+      "schema": "SupplyRequest",
+      "description": "Collection of department supply requests"
+    },
+    "/config/{configId}": {
+      "schema": "AppConfig",
+      "description": "App configuration collections"
+    }
+  }
+}
